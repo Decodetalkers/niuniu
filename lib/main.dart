@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fucky/animatewidget/annimate.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
+//final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -38,43 +40,9 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class Drawer2 extends StatelessWidget {
-  const Drawer2({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) => ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: Text('Drawer Header'),
-          ),
-          ListTile(
-            title: const Text('Item 1'),
-            onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: const Text('Item 2'),
-            onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      );
-}
-
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-
+  final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -88,15 +56,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final Future<String> _panel =
       Future<String>.delayed(const Duration(seconds: 3), () => 'Data loaded');
-  @override
+  
+	@override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+
     return Scaffold(
+      key: _key,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.menu),
@@ -105,11 +70,12 @@ class _MyHomePageState extends State<MyHomePage> {
             setState(() {
               _counter--;
             });
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const Drawer(child: Drawer2())),
-            );
+            _key.currentState!.openDrawer();
+            //Navigator.push(
+            //  context,
+            //  MaterialPageRoute(
+            //      builder: (context) => const Drawer(child: Drawer2())),
+            //);
           },
         ),
         // Here we take the value from the MyHomePage object that was created by
@@ -126,17 +92,16 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+
             FutureBuilder<String>(
               future: _panel, // a previously-obtained Future<String> or null
               builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
                 List<Widget> children;
                 if (snapshot.hasData) {
                   children = <Widget>[
-                    const Icon(
-                      Icons.check_circle_outline,
-                      color: Colors.green,
-                      size: 60,
-                    ),
+										DraggableCard(
+            				  child: const FlutterLogo(size: 128),
+            				),
                     Padding(
                       padding: const EdgeInsets.only(top: 16),
                       child: Text('Result: ${snapshot.data}'),
@@ -179,7 +144,41 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-
+      drawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              title: const Text('牛子'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('关于'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '牛子'),
