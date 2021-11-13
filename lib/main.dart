@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fucky/animatewidget/annimate.dart';
+import 'package:fucky/sidebarbutton/sidebarbutton.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,26 +14,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '献出牛子',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: '康康牛子'),
-    );
+        title: '献出牛子',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const MyHomePage(title: '康康牛子'),
+        });
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -44,22 +38,33 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       _counter++;
     });
   }
 
+  void _navigateAndDisplaySelection(BuildContext context) async {
+    // Navigator.push returns a Future that completes after calling
+    // Navigator.pop on the Selection Screen.
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SelectionScreen()),
+    );
+
+    // After the Selection Screen returns a result, hide any previous snackbars
+    // and show the new result.
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text('$result')));
+  }
+
+  final list = ['牛子','News' ,'关于'];
   final Future<String> _panel =
       Future<String>.delayed(const Duration(seconds: 3), () => 'Data loaded');
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // with builder , I can get the context of this widget, then I can set the state
         leading: Builder(builder: (context) {
           return IconButton(
               icon: const Icon(Icons.menu),
@@ -70,22 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Scaffold.of(context).openDrawer(); //打开开始方向抽屉布局
               });
         }),
-        //leading: IconButton(
-        //  icon: const Icon(Icons.menu),
-        //  tooltip: 'Navgation menu',
-        //  onPressed: () {
-        //    setState(() {
-        //      _counter--;
-        //    });
-        //    _key.currentState!.openDrawer();
-        //    //Navigator.push(
-        //    //  context,
-        //    //  MaterialPageRoute(
-        //    //      builder: (context) => const Drawer(child: Drawer2())),
-        //    //);
-        //  },
-        //),
-        // Here we take the value from the MyHomePage object that was created by
+
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
@@ -164,24 +154,14 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               child: Text('Drawer Header'),
             ),
-            ListTile(
-              title: const Text('牛子'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('关于'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
+            for (final item in list)
+              ListTile(
+                title: Text(item),
+                onTap: () {
+                  Navigator.pop(context);
+                  _navigateAndDisplaySelection(context);
+                },
+              ),
           ],
         ),
       ),
