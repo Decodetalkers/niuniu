@@ -57,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ..showSnackBar(SnackBar(content: Text('$result')));
   }
 
-  final list = ['牛子','News' ,'关于'];
+  final list = ['牛子', 'News', '关于'];
   final Future<String> _panel =
       Future<String>.delayed(const Duration(seconds: 3), () => 'Data loaded');
   @override
