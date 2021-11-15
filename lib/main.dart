@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fucky/animatewidget/annimate.dart';
 import 'package:fucky/sidebarbutton/sidebarbutton.dart';
-
+import 'package:fucky/languagepop/languagepop.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -162,6 +162,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   _navigateAndDisplaySelection(context);
                 },
               ),
+						ListTile(
+								title: const Text('Language'),
+								onTap: (){
+									Navigator.push(
+									context,
+										MaterialPageRoute(builder: (context) => LanguagePop()),
+								);
+
+								},
+						),
           ],
         ),
       ),
