@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class LanguagePop extends StatefulWidget {
   final int index;
-  final languages = ['zh', 'zh-TW', 'EN', 'JP'];
+  final languages = ['ZH', 'TW', 'EN', 'JP', 'MG', 'ED', 'XJ', 'XZ', 'EG', 'RU'];
   LanguagePop({Key? key, required this.index}) : super(key: key);
   @override
   State<LanguagePop> createState() => _LanguagePopState();
@@ -21,13 +21,13 @@ class _LanguagePopState extends State<LanguagePop> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-        insetPadding: const EdgeInsets.fromLTRB(100, 200, 100, 200),
+        insetPadding: const EdgeInsets.fromLTRB(50, 100, 50, 100),
         child: Container(
             //decoration:
             //    BoxDecoration(color: const Color(0xFFFFFFFF).withOpacity(1)),
             margin: const EdgeInsets.fromLTRB(30, 30, 30, 30),
             width: 1000,
-            child: Column(
+            child: ListView(
                 children: widget.languages
                     .asMap()
                     .map((i, item) => MapEntry(
