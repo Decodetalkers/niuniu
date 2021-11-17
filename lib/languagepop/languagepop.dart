@@ -59,6 +59,7 @@ class _LanguagePopState extends State<LanguagePop> {
                         .values
                         .toList()),
               ),
+							const SizedBox(height: 20),
               Row(
 									 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 									children: [
