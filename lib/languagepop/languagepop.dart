@@ -1,20 +1,10 @@
 import 'package:flutter/material.dart';
+import 'countrys.dart';
 
 class LanguagePop extends StatefulWidget {
   final int index;
-  final languages = [
-    'ZH',
-    'TW',
-    'EN',
-    'JP',
-    'MG',
-    'ED',
-    'XJ',
-    'XZ',
-    'EG',
-    'RU'
-  ];
-  LanguagePop({Key? key, required this.index}) : super(key: key);
+
+  const LanguagePop({Key? key, required this.index}) : super(key: key);
   @override
   State<LanguagePop> createState() => _LanguagePopState();
 }
@@ -41,32 +31,41 @@ class _LanguagePopState extends State<LanguagePop> {
             child: Column(children: [
               Expanded(
                 child: ListView(
-                    children: widget.languages
+                    children: countrys
                         .asMap()
                         .map((i, item) => MapEntry(
                             i,
-                            CheckboxListTile(
-                                title: Text(item),
-                                value: i == _index,
-                                onChanged: (val) {
-                                  //Navigator.pop(context, [i, item]);
-                                  if (i != _index) {
-                                    setState(() {
-                                      _index = i;
-                                    });
-                                  }
-                                })))
+														Column(
+																children:[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+																const Spacer(),
+                                item,
+																const Spacer(),
+                                Checkbox(
+                                    value: i == _index,
+                                    onChanged: (val) {
+                                      //Navigator.pop(context, [i, item]);
+                                      if (i != _index) {
+                                        setState(() {
+                                          _index = i;
+                                        });
+                                      }
+                                    })
+                              ],
+                            ),
+														const SizedBox(height: 5,)
+																])))
                         .values
                         .toList()),
               ),
-							const SizedBox(height: 20),
-              Row(
-									 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-									children: [
+              const SizedBox(height: 20),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                 Container(
                     decoration: const BoxDecoration(
-                      borderRadius:BorderRadius.all(Radius.circular(6)),
-                          //BorderRadius.only(bottomLeft: Radius.circular(6)),
+                      borderRadius: BorderRadius.all(Radius.circular(6)),
+                      //BorderRadius.only(bottomLeft: Radius.circular(6)),
                       color: Colors.lightBlueAccent,
                     ),
                     height: 45,
@@ -78,15 +77,14 @@ class _LanguagePopState extends State<LanguagePop> {
                     )),
                 Container(
                     decoration: const BoxDecoration(
-                      borderRadius:BorderRadius.all(Radius.circular(6)),
+                      borderRadius: BorderRadius.all(Radius.circular(6)),
                       color: Colors.lightBlueAccent,
                     ),
                     height: 45,
                     child: TextButton(
                       child: const Text('conferm'),
                       onPressed: () {
-                        Navigator.pop(
-                            context, [_index, widget.languages[_index]]);
+                        Navigator.pop(context, [_index, countrys[_index]]);
                       },
                     ))
               ])
