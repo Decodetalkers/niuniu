@@ -37,13 +37,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-	int _index = 0;
+  int _index = 0;
   void _incrementCounter() {
     setState(() {
       _counter++;
     });
   }
-	//final _language = LanguagePop();
+
+  //final _language = LanguagePop();
   void _navigateAndDisplaySelection(BuildContext context) async {
     // Navigator.push returns a Future that completes after calling
     // Navigator.pop on the Selection Screen.
@@ -170,16 +171,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.pop(context);
                 showDialog(
                   context: context,
-                  builder: (context) => LanguagePop(index: _index,),
+                  barrierDismissible: false,
+                  builder: (context) => LanguagePop(
+                    index: _index,
+                  ),
                 ).then((value) {
-									var name = (value as List)[1];
-									var index = value[0];
-                  ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text('$name')));
-									setState(() {
-									  _index = index;
-									});
+                  if (value is List) {
+                    var name = value[1];
+                    var index = value[0];
+                    ScaffoldMessenger.of(context)
+                      ..removeCurrentSnackBar()
+                      ..showSnackBar(SnackBar(content: Text('$name')));
+                    setState(() {
+                      _index = index;
+                    });
+                  }
                 });
               },
             ),
