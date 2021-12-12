@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:fucky/animatewidget/annimate.dart';
+//import 'package:fucky/animatewidget/annimate.dart';
 import 'package:fucky/sidebarbutton/sidebarbutton.dart';
 import 'package:fucky/languagepop/languagepop.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:async';
 
 void main() {
   runApp(const MyApp());
@@ -34,7 +37,20 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
-
+Future<List<String>> createAlbum(String input) async {
+  var postback = await http.post(
+    Uri.parse('https://lab.magiconch.com/api/nbnhhsh/guess'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'text': input,
+    }),
+  );
+	//print(postback.body);
+	return List<String>.from(jsonDecode(postback.body)[0]['trans']);
+		//print(mm);
+}
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   int _index = 0;
@@ -61,8 +77,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   final list = ['牛子', 'News', '关于'];
-  final Future<String> _panel =
-      Future<String>.delayed(const Duration(seconds: 3), () => 'Data loaded');
+  //final Future<String> _panel =
+  //    Future<String>.delayed(const Duration(seconds: 3), () => 'Data loaded');
+
+	final Future<List<String>> _panel = createAlbum('hhsh');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,20 +110,19 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
-            FutureBuilder<String>(
+            FutureBuilder<List<String>>(
               future: _panel, // a previously-obtained Future<String> or null
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
                 List<Widget> children;
                 if (snapshot.hasData) {
-                  children = <Widget>[
-                    DraggableCard(
-                      child: const FlutterLogo(size: 128),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: Text('Result: ${snapshot.data}'),
-                    )
-                  ];
+									var message =  snapshot.data as List<String>;
+                  children = message
+												.map((item) => Text(item))
+												.toList();
+                    //Padding(
+                    //  padding: const EdgeInsets.only(top: 16),
+                    //  child: Text('Result: ${snapshot.data}'),
+                    //)
                 } else if (snapshot.hasError) {
                   children = <Widget>[
                     const Icon(

@@ -35,28 +35,30 @@ class _LanguagePopState extends State<LanguagePop> {
                         .asMap()
                         .map((i, item) => MapEntry(
                             i,
-														Column(
-																children:[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-																const Spacer(),
-                                item,
-																const Spacer(),
-                                Checkbox(
-                                    value: i == _index,
-                                    onChanged: (val) {
-                                      //Navigator.pop(context, [i, item]);
-                                      if (i != _index) {
-                                        setState(() {
-                                          _index = i;
-                                        });
-                                      }
-                                    })
-                              ],
-                            ),
-														const SizedBox(height: 5,)
-																])))
+                            Column(children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  const Spacer(),
+                                  item,
+                                  const Spacer(),
+                                  Checkbox(
+                                      value: i == _index,
+                                      onChanged: (val) {
+                                        //Navigator.pop(context, [i, item]);
+                                        if (i != _index) {
+                                          setState(() {
+                                            _index = i;
+                                          });
+                                        }
+                                      })
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              )
+                            ])))
                         .values
                         .toList()),
               ),
