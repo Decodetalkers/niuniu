@@ -11,8 +11,3 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
-.settings
-.project
-app/.settings
-app/.classpath
-app/.project
