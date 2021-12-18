@@ -149,17 +149,24 @@ class _MyHomePageState extends State<MyHomePage> {
               future: createAlbum(
                   _name), // a previously-obtained Future<String> or null
               builder: (BuildContext context, AsyncSnapshot<Dick> snapshot) {
-                List<Widget> children;
+                //List<Widget> children;
+								Widget mainpage;
                 if (snapshot.hasData) {
-                  children = (snapshot.data as Dick)
+                  var children = (snapshot.data as Dick)
                       .dicks
                       .map((e) => ExpansionTile(
                             title: Text(e.name),
                             children: e.dick.map((e) => Text(e)).toList(),
                           ))
                       .toList();
+									mainpage = Expanded(
+										child: ListView(
+											shrinkWrap: true,
+											children: children,
+										),
+									);
                 } else if (snapshot.hasError) {
-                  children = <Widget>[
+                  var children = <Widget>[
                     const Icon(
                       Icons.error_outline,
                       color: Colors.red,
@@ -170,8 +177,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Text('Error: ${snapshot.error}'),
                     )
                   ];
+									mainpage = Expanded(
+										child: Column(
+										  mainAxisAlignment: MainAxisAlignment.center,
+											crossAxisAlignment: CrossAxisAlignment.center,
+											children: children,
+										),
+									);
                 } else {
-                  children = const <Widget>[
+                  var children = const <Widget>[
                     SizedBox(
                       child: CircularProgressIndicator(),
                       width: 60,
@@ -182,13 +196,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Text('Awaiting result...'),
                     )
                   ];
+									mainpage = Expanded(
+										child: Column(
+										  mainAxisAlignment: MainAxisAlignment.center,
+											crossAxisAlignment: CrossAxisAlignment.center,
+											children: children,
+										),
+									);
                 }
-                return Expanded(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: children,
-                  ),
-                );
+                return mainpage; 
               },
             )
           ],
