@@ -37,30 +37,53 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
-Future<List<String>> createAlbum(String input) async {
+
+class ADick {
+  final String name;
+  final List<String> dick;
+  ADick({
+    required this.name,
+    required this.dick,
+  });
+  factory ADick.fromJson(dynamic json) => ADick(
+        name: json["name"],
+        dick: (json["trans"] as List).map((e) => e as String).toList(),
+      );
+}
+
+class Dick {
+  final List<ADick> dicks;
+  Dick({required this.dicks});
+  factory Dick.fromJson(dynamic json) =>
+      Dick(dicks: (json as List).map((e) => ADick.fromJson(e)).toList());
+}
+
+Future<Dick> createAlbum(String input) async {
+  var re = RegExp(r"([a-zA-z0-9]{2,})+");
+  String input2 = "";
+  Iterable<RegExpMatch> matches = re.allMatches(input);
+  for (var match in matches) {
+    input2 += "${match.group(0)},";
+  }
+
   var postback = await http.post(
     Uri.parse('https://lab.magiconch.com/api/nbnhhsh/guess'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
     body: jsonEncode(<String, String>{
-      'text': input,
+      'text': input2,
     }),
   );
-	//print(postback.body);
-	return List<String>.from(jsonDecode(postback.body)[0]['trans']);
-		//print(mm);
+  //print(postback.body);
+  return Dick.fromJson(jsonDecode(postback.body));
+  //print(mm);
 }
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  int _index = 0;
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
-  //final _language = LanguagePop();
+class _MyHomePageState extends State<MyHomePage> {
+  //int _counter = 0;
+  int _index = 0;
+  String _name = "hhsh";
   void _navigateAndDisplaySelection(BuildContext context) async {
     // Navigator.push returns a Future that completes after calling
     // Navigator.pop on the Selection Screen.
@@ -76,11 +99,12 @@ class _MyHomePageState extends State<MyHomePage> {
       ..showSnackBar(SnackBar(content: Text('$result')));
   }
 
+  final _controller = TextEditingController();
   final list = ['牛子', 'News', '关于'];
   //final Future<String> _panel =
   //    Future<String>.delayed(const Duration(seconds: 3), () => 'Data loaded');
 
-	final Future<List<String>> _panel = createAlbum('hhsh');
+  //final Future<Dick> _panel = createAlbum('hhsh,yyds,xz,yysy,shzy,ybb,xxs,yxs,xswl');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,9 +114,6 @@ class _MyHomePageState extends State<MyHomePage> {
           return IconButton(
               icon: const Icon(Icons.menu),
               onPressed: () {
-                setState(() {
-                  _counter--;
-                });
                 Scaffold.of(context).openDrawer(); //打开开始方向抽屉布局
               });
         }),
@@ -104,25 +125,39 @@ class _MyHomePageState extends State<MyHomePage> {
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            TextFormField(
+              controller: _controller,
+              decoration: InputDecoration(
+                  border: const UnderlineInputBorder(),
+                  labelText: 'Input search',
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _name = _controller.text;
+                        });
+                      },
+                      icon: const Icon(Icons.send))),
+              onFieldSubmitted: (String value) {
+                setState(() {
+                  _name = value;
+                });
+              },
             ),
-            FutureBuilder<List<String>>(
-              future: _panel, // a previously-obtained Future<String> or null
-              builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+            FutureBuilder<Dick>(
+              future: createAlbum(
+                  _name), // a previously-obtained Future<String> or null
+              builder: (BuildContext context, AsyncSnapshot<Dick> snapshot) {
                 List<Widget> children;
                 if (snapshot.hasData) {
-									var message =  snapshot.data as List<String>;
-                  children = message
-												.map((item) => Text(item))
-												.toList();
-                    //Padding(
-                    //  padding: const EdgeInsets.only(top: 16),
-                    //  child: Text('Result: ${snapshot.data}'),
-                    //)
+                  children = (snapshot.data as Dick)
+                      .dicks
+                      .map((e) => ExpansionTile(
+                            title: Text(e.name),
+                            children: e.dick.map((e) => Text(e)).toList(),
+                          ))
+                      .toList();
                 } else if (snapshot.hasError) {
                   children = <Widget>[
                     const Icon(
@@ -148,10 +183,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     )
                   ];
                 }
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                return Expanded(
+                  child: ListView(
+                    shrinkWrap: true,
                     children: children,
                   ),
                 );
@@ -161,9 +195,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
         child: ListView(
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
@@ -215,11 +246,6 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.pages), label: '详情'),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
