@@ -5,6 +5,7 @@ import 'package:fucky/languagepop/languagepop.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -128,6 +129,8 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             TextFormField(
+							keyboardType: TextInputType.multiline,
+							maxLines: 4,
               controller: _controller,
               decoration: InputDecoration(
                   border: const UnderlineInputBorder(),
@@ -145,6 +148,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
+						IconButton(
+							icon: const Icon(Icons.receipt),
+							onPressed: () async {
+								Clipboard.getData(Clipboard.kTextPlain).then((value){
+									String? temp = value?.text;
+									if(temp != null) {
+										_controller.text = temp;
+									}
+								});
+							},
+						),
             FutureBuilder<Dick>(
               future: createAlbum(
                   _name), // a previously-obtained Future<String> or null
